@@ -60,7 +60,7 @@ const InputComponent: React.FC<InputComponentProps> = ({ formValues, onChange })
                     min={0}
                     max={100}
                 />
-                {errors.arrivalMultiplier && <span className="text-red-500">Enter a value between 20% and 200%</span>}
+                {errors.arrivalMultiplier && <span className="text-red-500">Enter a value between 0% and 100%</span>}
             </div>
 
             <div>
@@ -89,14 +89,16 @@ const InputComponent: React.FC<InputComponentProps> = ({ formValues, onChange })
                     {...register('chargingPower', {
                         required: true,
                         min: 1,
-                        max: 350,
+                        max: 50,
                         valueAsNumber: true,
                     })}
                     value={formValues.chargingPower}
                     onChange={(e) => handleInputChange('chargingPower', Number(e.target.value))}
                     className="input"
+                    min={0}
+                    max={50}
                 />
-                {errors.chargingPower && <span className="text-red-500">Enter a value between 1 and 350 kW</span>}
+                {errors.chargingPower && <span className="text-red-500">Enter a value between 1 and 50 kW</span>}
             </div>
         </form>
     );
