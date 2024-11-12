@@ -1,26 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import chroma from 'chroma-js';
+import InputComponent from './components/InputComponent';
+import OutputComponent from './components/OutputComponent';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+type FormValues = {
+    chargePoints: number;
+    arrivalMultiplier: number;
+    carConsumption: number;
+    chargingPower: number;
+};
+
+const App: React.FC = () => {
+    const [formValues, setFormValues] = useState<FormValues>({
+        chargePoints: 20,
+        arrivalMultiplier: 30,
+        carConsumption: 18,
+        chargingPower: 11,
+    });
+
+    const handleFormChange = (name: keyof FormValues, value: number) => {
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
+    };
+
+    const totalEnergyCharged = formValues.chargePoints * formValues.carConsumption * (formValues.arrivalMultiplier / 100);
+    const maxPowerDemand = formValues.chargePoints * formValues.chargingPower;
+
+    const demandRatio = Math.min(totalEnergyCharged / maxPowerDemand, 2);
+    const backgroundColor = chroma.mix('#ccffcc', '#f63333', demandRatio).hex();
+
+    return (
+        <motion.div
+            className="container mx-auto p-4 space-y-4"
+            style={{ minHeight: '100vh' }}
+            animate={{ backgroundColor }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+            <h1 className="text-2xl font-bold">EV Charging Simulation</h1>
+            <InputComponent formValues={formValues} onChange={handleFormChange} />
+            <OutputComponent formValues={formValues} />
+        </motion.div>
+    );
+};
 
 export default App;
